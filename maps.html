@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maps - Web GIS Pertashop</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="images/5.png" alt="Logo Pertamina">
+        </div>
+        <ul>
+            <li><a href="index.html">HOME</a></li>
+            <li><a href="maps.html">MAPS</a></li>
+        </ul>
+    </nav>
+
+    <section class="map-container">
+        <div id="map"></div>
+    </section>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    <script>
+        var map = L.map('map', {
+            center: [-8.525405304611585, 140.4177856120012],
+            zoom: 13,
+            zoomControl: false // Menonaktifkan kontrol zoom default
+        });
+
+        // Ganti Google Satellite dengan ESRI World Imagery (realistis dan legal)
+        var esriSat = L.tileLayer(
+            'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: '&copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community'
+        });
+
+        // OpenStreetMap
+        var openStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        });
+
+        // Tambahkan ESRI sebagai default
+        esriSat.addTo(map);
+
+        // Layer control
+        var baseMaps = {
+            "OpenStreetMap (OSM)": openStreetMap,
+            "ESRI Satellite": esriSat
+        };
+
+        var layerControl = L.control.layers(baseMaps, null, { position: 'bottomleft' }).addTo(map);
+
+
+        // Menambahkan kontrol zoom di bawah kanan
+        L.control.zoom({
+            position: 'bottomright'
+        }).addTo(map);
+
+        var pertashopLocations = [
+            { 
+                lat: -8.5045116,
+                lng:  140.3848615, 
+                name: "Pertashop CV Karisma Jaya (8P.99603)", 
+                address: "Jln. Irian Seringgu, RT 012 RW 004, Kel. Samka, Kab. Merauke", 
+                description: "Pertashop di Jalan Irian Seringgu menjual bahan bakar Pertamax, memberikan pilihan bahan bakar berkualitas bagi pengendara di sekitar area tersebut. Di dekatnya, terdapat Toko Dasya Mart, yang menyediakan berbagai kebutuhan sehari-hari bagi pelanggan, menjadikan lokasi ini lebih praktis untuk berhenti sejenak.",
+                image: "images/seringgu.jpg" 
+            },
+            { 
+                lat: -8.506530011323015,
+                lng: 140.41525950360273, 
+                name: "Pertashop PT Wikutama Sarana (8P.99604)", 
+                address: "Jln. Sutan Syarir RT 002/ RW 001, Kel Kamundu, Kab Merauke", 
+                description: "Pertashop di Jalan Sutan Syahrir merupakan unit penjualan resmi Pertamina yang menyediakan bahan bakar Pertamax. Lokasinya strategis dan mudah dijangkau, dengan toko Orange Xpress yang berada tepat di belakangnya, menambah kenyamanan bagi masyarakat sekitar dalam memenuhi kebutuhan bahan bakar dan layanan ekspedisi.",
+                image: "images/orange.jpg" 
+            },
+            { 
+                lat: -8.502889414620446,
+                lng: 140.3732465917088, 
+                name: "Pertashop PT Bintang Sembilan Papua (8P.99605)", 
+                address: "Jln. Lampu Satu, RT. 001 RW 002, Kel. Samkai, Kec. Merauke, Kab. Merauke", 
+                description: "Pertashop di Jalan Lampu Satu menyediakan bahan bakar jenis Dexlite dan Pertamax, memberikan variasi pilihan bahan bakar berkualitas bagi pengendara di area tersebut. Lokasi ini menjadi pilihan yang tepat untuk mengisi bahan bakar dengan kedua jenis yang tersedia.",
+                image: "images/lampu satu.jpg" 
+            },
+            { 
+                lat: -8.534916166131824, 
+                lng:  140.427575898875, 
+                name: "Pertashop CV Generasi Legasi Baru (8P.99609)", 
+                address: "Jln Garuda Mopah Lama, RT 013 / RW 002, Kel Rimba Jaya, Kec Merauke, Kab Merauke", 
+                description: "Pertashop yang menjual Pertamax ini juga dilengkapi dengan Toko Pertamart, menyediakan berbagai produk dan kebutuhan sehari-hari bagi pelanggan. Lokasi ini menawarkan kenyamanan dengan akses mudah untuk mengisi bahan bakar sekaligus memenuhi kebutuhan lainnya.",
+                image: "images/pertamart.jpg" 
+            },
+            { 
+                lat: -8.478325, 
+                lng: 140.395435, 
+                name: "Pertashop CV. Damaindo Utama (8P.99625)", 
+                address: "Jln. Mayor Wiratno RT.22 / RW. 06, Kel. Maro, Kec.Merauke, Kab.Merauke", 
+                description: "Pertashop di Jalan Mayor Wiratno menjual bahan bakar Pertamax, menyediakan pilihan bahan bakar berkualitas bagi pengendara yang melintas di area tersebut. Lokasinya strategis dan mudah dijangkau, menjadi titik penting untuk pengisian bahan bakar di wilayah Kelurahan Maro.",
+                image: "images/gudangarang.jpg" 
+            },
+            { 
+                lat: -8.512427, 
+                lng: 140.393984, 
+                name: "Pertashop CV. Karisma Jaya (8P.99623)", 
+                address: "Jln. Ndorem Kai, RT 015 / RW 005, Kel. Samkai, Kec. Merauke, Kab. Merauke", 
+                description: "Pertashop ini menyediakan Pertamax sebagai bahan bakar berkualitas, dengan Toko Dasya Mart yang terletak di belakangnya, menawarkan berbagai kebutuhan sehari-hari. Lokasi ini memudahkan pelanggan untuk mengisi bahan bakar sekaligus berbelanja.",
+                image: "images/kpg.jpg" 
+            },
+            { 
+                lat: -8.525406, 
+                lng: 140.417795, 
+                name: "Pertashop CV. Balqis Zikria Wananggub (8P.99627)", 
+                address: "Jln. Garuda Spadem, Kec.Merauke, Kel.Rimba Jaya, Kab.Merauke", 
+                description: "Pertashop di Garuda Spadem menyediakan bahan bakar Pertamax, memberikan kemudahan bagi pengendara di sekitar area tersebut. Lokasinya juga dekat dengan Universitas Musamus, memudahkan mahasiswa dan staf kampus untuk mengisi bahan bakar tanpa harus pergi jauh. Dengan adanya Pertashop ini, kebutuhan bahan bakar dapat terpenuhi dengan mudah dan efisien.",
+                image: "images/spadem.jpg" 
+            },
+            { 
+                lat: -8.5249728, 
+                lng: 140.4236422, 
+                name: "Pertashop CV. Demak Indah (8P.99630)", 
+                address: "Jln. Pembangunan, RT.003/RW.001 Kel. Rimba Jaya, Kec. Merauke, Kab. Merauke", 
+                description: "Pertashop di Jalan Pembangunan terletak dekat dengan Toko Benelli, yang menjual berbagai produk frozen food. Lokasi ini juga berada di dekat Gudang Toko Bintoro, menjadikannya tempat yang strategis bagi pelanggan yang ingin mengisi bahan bakar sambil berbelanja kebutuhan sehari-hari.",
+                image: "images/pembangunan.jpg"
+            }
+            
+        ];
+
+        var routingControl = null; // variabel untuk menyimpan rute yang sedang aktif
+
+// Loop marker Pertashop
+// Tambahkan marker untuk semua lokasi Pertashop
+pertashopLocations.forEach(function(location) {
+    var marker = L.marker([location.lat, location.lng])
+        .addTo(map)
+        .bindPopup(
+            '<b>' + location.name + '</b><br>' +
+            '<img src="' + location.image + '" class="popup-image"><br>' +
+            '<b>Alamat:</b> ' + location.address + '<br>' +
+            '<b>Deskripsi:</b> ' + location.description + '<br><br>' +
+            '<button onclick="getRouteTo(this, ' + location.lat + ',' + location.lng + ')">Tampilkan Rute</button>'
+        );
+});
+
+var userMarker = null; // Marker pengguna (jika diperlukan)
+var routingControls = []; // Array untuk menyimpan semua rute aktif
+
+// Fungsi untuk menampilkan rute dari lokasi pengguna ke Pertashop
+function getRouteTo(button, destLat, destLng) {
+    // Cegah spam klik
+    if (button.disabled) return;
+
+    // Lock tombol saat memproses
+    button.disabled = true;
+    var originalText = button.innerText;
+    button.innerText = "Memuat rute...";
+
+    // Hapus semua rute sebelumnya
+    routingControls.forEach(function(rc) {
+        map.removeControl(rc);
+    });
+    routingControls = [];
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                var userLat = position.coords.latitude;
+                var userLng = position.coords.longitude;
+
+                var userLatLng = L.latLng(userLat, userLng);
+                var destinationLatLng = L.latLng(destLat, destLng);
+
+                // Tooltip lokasi pengguna
+                var tooltip = L.tooltip({
+                    permanent: false,
+                    direction: 'top',
+                    className: 'custom-tooltip'
+                }).setLatLng(userLatLng)
+                  .setContent("Lokasi Anda")
+                  .addTo(map);
+
+                // Tambahkan rute
+                var routingControl = L.Routing.control({
+                    waypoints: [userLatLng, destinationLatLng],
+                    routeWhileDragging: false,
+                    draggableWaypoints: false,
+                    addWaypoints: false,
+                    fitSelectedRoutes: true,
+                    show: false, // Sembunyikan panel samping
+                    createMarker: () => null // Jangan buat marker tambahan
+                }).addTo(map);
+
+                // Simpan ke array rute aktif
+                routingControls.push(routingControl);
+
+                // Reset tombol setelah jeda singkat
+                setTimeout(() => {
+                    button.disabled = false;
+                    button.innerText = originalText;
+                }, 1000);
+            },
+            function (error) {
+                alert("Gagal mendeteksi lokasi Anda. Pastikan izin lokasi aktif.");
+                button.disabled = false;
+                button.innerText = originalText;
+            }
+        );
+    } else {
+        alert("Browser tidak mendukung geolokasi.");
+        button.disabled = false;
+        button.innerText = originalText;
+    }
+}
+
+// Hapus semua rute jika user klik sembarang di peta
+map.on('click', function() {
+    routingControls.forEach(function(rc) {
+        map.removeControl(rc);
+    });
+    routingControls = [];
+});
+
+
+    </script>
+</body>
+</html>
